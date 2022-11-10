@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "584878089384",
+    "project_id": "pricemanager-5eb7e",
+    "storage_bucket": "pricemanager-5eb7e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584878089384:android:f4f3bd8b0d892385d88e9d",
+        "android_client_info": {
+          "package_name": "com.example.price_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584878089384-9enk5kcmmmb4llljrmqlthlhu670f8t3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWK25TLvpsSrHwjaVnoV5uXWMhJNfgWCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584878089384-9enk5kcmmmb4llljrmqlthlhu670f8t3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,82 @@
+name: price_manager
+description: price manager for supermarket
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.1 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  firebase_auth: ^4.1.0
+  firebase_core: ^2.1.1
+  cloud_firestore: ^4.0.3
+  flutter_bloc: ^8.1.1
+  fluttertoast: ^8.1.1
+  equatable: ^2.0.5
+  shared_preferences: ^2.0.15
+  lottie: ^1.4.3
+  font_awesome_flutter: ^10.2.1
+  connectivity_plus: ^3.0.2
+  dartz: ^0.10.1
+  internet_connection_checker: ^1.0.0+1
+  get_it: ^7.2.0
+  email_validator: ^2.1.17
+  device_preview: ^1.1.0
+  firebase_storage: ^11.0.3
+  auto_size_text: ^3.0.0
+  bloc_concurrency: ^0.2.0
+  image_picker: ^0.8.6
+  ntp: ^2.0.0
+
+
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+
+  fonts:
+    - family: dubai
+      fonts:
+        - asset: assets/fonts/Dubai-Bold.ttf
+          weight: 700
+
+        - asset: assets/fonts/Dubai-Medium.ttf
+          weight: 400
+
+        - asset: assets/fonts/Dubai-Regular.ttf
+
+    - family: trebuc
+      fonts:
+        - asset: assets/fonts/trebuc.ttf
+
+    - family: cairo
+      fonts:
+        - asset: assets/fonts/cairo.ttf
+
+    - family: conneqt
+      fonts:
+        - asset: assets/fonts/conneqt.ttf
+
+    - family: luckiestguy
+      fonts:
+        - asset: assets/fonts/LuckiestGuy.ttf
