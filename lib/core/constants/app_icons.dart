@@ -10,5 +10,13 @@ class AppIcons{
   static const IconData edit = FontAwesomeIcons.pen;
   static const IconData delete = FontAwesomeIcons.trash;
 
+  static const IconData lock = FontAwesomeIcons.lock;
+  static const IconData logOut = FontAwesomeIcons.rightFromBracket;
+
+  static const IconData arrowLeft = FontAwesomeIcons.arrowLeft;
+  static const IconData roundedArrowLeft = FontAwesomeIcons.angleLeft;
+
+
+
   AppIcons._();
 }

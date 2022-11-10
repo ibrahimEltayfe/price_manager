@@ -7,5 +7,7 @@ class AppRoutes {
 
   static const String addProduct = '/addProduct';
 
+  static const String changePasswordPage = '/changePassword';
+
 }
 

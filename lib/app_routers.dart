@@ -9,6 +9,7 @@ import 'package:price_manager/features/dashboard/presentation/pages/add_product_
 import 'package:price_manager/features/home/domain/entities/product_entity.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:price_manager/features/home/presentation/bloc/product_details/product_details_bloc.dart';
+import 'package:price_manager/features/profile/presentation/pages/change_password_page.dart';
 import 'core/constants/app_routes.dart';
 import 'features/home/presentation/pages/home_base.dart';
 import 'features/home/presentation/pages/product_details.dart';
@@ -57,6 +58,11 @@ class RoutesManager{
             settings: settings
         );
 
+      case AppRoutes.changePasswordPage:
+        return MaterialPageRoute(
+            builder: (_)=> ChangePasswordPage(),
+            settings: settings
+        );
 
       default: return MaterialPageRoute(
           builder: (_)=> UnExcepectedErrorPage(),

@@ -15,7 +15,7 @@ class AppStrings {
   static const String alreadyHaveAccount = 'لديك حساب بالفعل ؟';
   static const String confirm = 'تأكيد';
 
-  static const String logout = 'تسجيل الخروج';
+
 
   /* Home */
   static const String home = 'الصفحة الرئيسية';
@@ -31,5 +31,8 @@ class AppStrings {
   static const String desc = ': التفاصيل';
   static const String price = ': السعر';
 
+  /*profile */
+  static const String changePassword = 'تغيير كلمة السر';
+  static const String logout = 'تسجيل الخروج';
 
 }
