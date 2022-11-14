@@ -3,13 +3,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:price_manager/features/profile/data/data_sources/profile_remote.dart';
-import 'package:price_manager/features/profile/data/models/user_model.dart';
-import 'package:price_manager/features/profile/domain/entities/user_entity.dart';
+import 'package:price_manager/features/shared/models/user_model.dart';
+import 'package:price_manager/features/shared/entities/user_entity.dart';
 import '../../../../core/constants/app_errors.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network_info/network_checker.dart';
-import '../../../home/domain/entities/product_entity.dart';
 import '../../domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository{
@@ -19,9 +18,9 @@ class ProfileRepositoryImpl implements ProfileRepository{
   ProfileRepositoryImpl(this._profileRemote, this._connectionChecker);
 
   @override
-  Future<Either<Failure, void>> changePassword(String newPassword) async{
+  Future<Either<Failure, void>> changePassword({required String oldPassword,required String newPassword}) async{
     return await _handleFailures<void>(
-        ()=> _profileRemote.changePassword(newPassword)
+        ()=> _profileRemote.changePassword(oldPassword:oldPassword,newPassword:newPassword)
     );
   }
 
@@ -57,4 +56,5 @@ class ProfileRepositoryImpl implements ProfileRepository{
       return const Left(NoInternetFailure(AppErrors.noInternet));
     }
   }
+
 }

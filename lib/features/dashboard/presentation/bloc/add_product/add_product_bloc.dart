@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:price_manager/core/utils/image_picker_helper.dart';
 import 'package:price_manager/features/dashboard/domain/repositories/products_repository.dart';
-import 'package:price_manager/features/home/data/models/product_model.dart';
+import 'package:price_manager/features/shared/models/product_model.dart';
 
 part 'add_product_event.dart';
 part 'add_product_state.dart';

@@ -6,14 +6,7 @@ class AppStrings {
   static const String login = 'دخول';
 
   static const String password = "كلمة السر";
-  static const String forgotPassword = "نسيت كلمة السر";
-  static const String phoneNumber = "رقم الهاتف";
-  static const String name = "الاسم";
   static const String email = "البريد الإلكترونى";
-
-  static const String haveNoAccount = 'ليس لديك حساب ؟ ';
-  static const String alreadyHaveAccount = 'لديك حساب بالفعل ؟';
-  static const String confirm = 'تأكيد';
 
   /* Home */
   static const String home = 'الصفحة الرئيسية';
@@ -34,5 +27,10 @@ class AppStrings {
   /*profile */
   static const String changePassword = 'تغيير كلمة السر';
   static const String logout = 'تسجيل الخروج';
+
+  /* change password */
+  static const String oldPassword = "كلمة السر القديمة";
+  static const String newPassword = "كلمة السر جديدة";
+  static const String reEnterNewPassword = "اعد كتابة كلمة السر الجديدة";
 
 }

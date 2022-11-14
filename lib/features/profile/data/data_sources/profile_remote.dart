@@ -13,15 +13,27 @@ class ProfileRemote{
     return await _fireStore.collection(EndPoints.users).doc(_firebaseAuth.currentUser?.uid).get();
   }
 
-  Future<void> changePassword(String newPassword) async{
+  Future<void> changePassword({required String oldPassword,required String newPassword}) async{
     final currentUser =  _firebaseAuth.currentUser;
+    final String? userEmail;
 
     if(currentUser == null){
       throw UIDException(AppErrors.noUID);
     }
 
+    userEmail = currentUser.email;
+    if(userEmail == null){
+      throw UIDException(AppErrors.noUID);
+    }
+
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: userEmail,
+      password: oldPassword,
+    );
+
     await currentUser.updatePassword(newPassword);
   }
+
 
   Future<void> signOut() async{
     await _firebaseAuth.signOut();

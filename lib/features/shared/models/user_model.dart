@@ -1,4 +1,4 @@
-import '../../domain/entities/user_entity.dart';
+import '../entities/user_entity.dart';
 
 class UserModel extends UserEntity{
 

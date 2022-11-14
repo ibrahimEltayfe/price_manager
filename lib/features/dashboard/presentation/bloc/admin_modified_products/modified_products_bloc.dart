@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_errors.dart';
 import '../../../../home/data/data_sources/products_remote.dart' show productsLimit;
-import '../../../../home/domain/entities/product_entity.dart';
+import '../../../../shared/entities/product_entity.dart';
 import '../../../domain/repositories/products_repository.dart';
 part 'modified_products_event.dart';
 part 'modified_products_state.dart';

@@ -3,7 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
-import 'package:price_manager/features/home/data/models/product_model.dart';
+import 'package:price_manager/features/shared/models/product_model.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:price_manager/reusable_components/dialogs/show_menu.dart';
 import 'package:price_manager/reusable_components/responsive/fitted_icon.dart';

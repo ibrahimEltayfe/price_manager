@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:price_manager/core/constants/app_icons.dart';
 import 'package:price_manager/core/constants/app_strings.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 import 'package:price_manager/features/home/presentation/bloc/product_details/product_details_bloc.dart';
 import 'package:price_manager/reusable_components/status_snackbar.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -46,9 +46,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           (value){
             log(value.toString());
             if(value == product.image){
-              context.read<ProductDetailsBloc>().buttonStateController.sink.add(false);
+              context.read<ProductDetailsBloc>().buttonStateChanger.changeState(false);
             }else{
-              context.read<ProductDetailsBloc>().buttonStateController.sink.add(true);
+              context.read<ProductDetailsBloc>().buttonStateChanger.changeState(true);
             }
           }
       );
@@ -82,9 +82,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
            && descController.text == product.desc
            && priceController.text == product.price
           ){
-            context.read<ProductDetailsBloc>().buttonStateController.sink.add(false);
+            context.read<ProductDetailsBloc>().buttonStateChanger.changeState(false);
           }else{
-            context.read<ProductDetailsBloc>().buttonStateController.sink.add(true);
+            context.read<ProductDetailsBloc>().buttonStateChanger.changeState(true);
           }
         },
         child: SafeArea(
@@ -129,29 +129,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
 
               //return button
-              Positioned(
-                left: context.width*0.018,
-                top: context.height*0.018,
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: context.width*0.12,
-                    height: context.height*0.056,
-                    decoration: getContainerDecoration(
-                      offset: Offset(0,context.height*0.003),
-                      borderRadius: 15
-                    ),
-                    child: FractionallyIcon(
-                      heightFactor: 0.42,
-                      widthFactor: 0.42,
-                      color: AppColors.black,
-                      icon: AppIcons.arrowLeft,
-                    ),
-                  ),
-                )
-              )
+              const _BackButton()
               
 
             ],
@@ -160,6 +138,36 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ),
     );
 
+  }
+}
+class _BackButton extends StatelessWidget {
+  const _BackButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+        left: context.width*0.018,
+        top: context.height*0.018,
+        child: GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Container(
+            width: context.width*0.12,
+            height: context.height*0.056,
+            decoration: getContainerDecoration(
+                offset: Offset(0,context.height*0.003),
+                borderRadius: 15
+            ),
+            child: FractionallyIcon(
+              heightFactor: 0.42,
+              widthFactor: 0.42,
+              color: AppColors.black,
+              icon: AppIcons.arrowLeft,
+            ),
+          ),
+        )
+    );
   }
 }
 
@@ -317,21 +325,24 @@ class _BottomSheet extends StatelessWidget {
             StreamBuilder<String?>(
               stream: context.read<ProductDetailsBloc>().productDateInfoController.stream,
               builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
+                /*if(snapshot.connectionState == ConnectionState.waiting){
                   return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,),);
-                }
+                }*/
 
                 if(snapshot.data == null){
                   return const SizedBox.shrink();
                 }
 
-                return AutoSizeText(
-                  snapshot.data??'',
-                  textAlign: TextAlign.right,
-                  maxLines: 2,
-                  minFontSize: 16,
-                  maxFontSize: 16,
-                  style: getBoldTextStyle(fontWeight: FontWeight.w400),
+                return Padding(
+                  padding: EdgeInsets.only(right: context.width*0.02),
+                  child: AutoSizeText(
+                    snapshot.data??'',
+                    textAlign: TextAlign.right,
+                    maxLines: 3,
+                    minFontSize: 16,
+                    maxFontSize: 16,
+                    style: getBoldTextStyle(fontWeight: FontWeight.w400),
+                  ),
                 );
               }
             ),
@@ -369,11 +380,11 @@ class _EditButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-    stream: context.read<ProductDetailsBloc>().buttonStateController.stream,
+    stream: context.read<ProductDetailsBloc>().buttonStateChanger.output,
      builder:(context, AsyncSnapshot<bool> snapshot) {
        final bool isActive = snapshot.data ?? false;
 
-       return  BlocConsumer<ProductDetailsBloc,ProductDetailsState>(
+       return BlocConsumer<ProductDetailsBloc,ProductDetailsState>(
          listener: (context, state) async{
            if(state is ProductDetailsUpdated){
              statusSnackBar(
@@ -390,25 +401,28 @@ class _EditButton extends StatelessWidget {
          },
 
          builder: (context, state) {
-           return GestureDetector(
-             onTap: onTap,
-             child: Container(
-                 width: context.width*0.6,
-                 height: context.height*0.09,
-                 decoration: getContainerDecoration(
-                     offset: Offset(0, context.height*0.008),
-                     borderRadius: 20,
-                     bgColor: isActive?AppColors.darkBlue:AppColors.darkGrey
-                 ),
-                 child: state is ProductDetailsLoading
-                     ? const Center(child: CircularProgressIndicator(color: AppColors.white,),)
-                     : FractionallyText(
-                     widthFactor:0.7 ,
-                     heightFactor:0.7 ,
-                     text: "تعديل",
-                     textStyle: getBoldTextStyle(color:AppColors.backgroundColor),
-                     alignment: Alignment.center
-                 )
+           return AbsorbPointer(
+             absorbing: !isActive,
+             child: GestureDetector(
+               onTap: onTap,
+               child: Container(
+                   width: context.width*0.6,
+                   height: context.height*0.09,
+                   decoration: getContainerDecoration(
+                       offset: Offset(0, context.height*0.008),
+                       borderRadius: 20,
+                       bgColor: isActive?AppColors.darkBlue:AppColors.darkGrey
+                   ),
+                   child: state is ProductDetailsLoading
+                       ? const Center(child: CircularProgressIndicator(color: AppColors.white,),)
+                       : FractionallyText(
+                       widthFactor:0.7 ,
+                       heightFactor:0.7 ,
+                       text: "تعديل",
+                       textStyle: getBoldTextStyle(color:AppColors.backgroundColor),
+                       alignment: Alignment.center
+                   )
+               ),
              ),
            );
          },

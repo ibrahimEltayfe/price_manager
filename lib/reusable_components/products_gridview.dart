@@ -8,7 +8,7 @@ import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dar
 import 'package:price_manager/reusable_components/responsive/fittted_text.dart';
 import '../core/constants/app_colors.dart';
 import '../core/constants/app_styles.dart';
-import '../features/home/domain/entities/product_entity.dart';
+import '../features/shared/entities/product_entity.dart';
 import '../features/home/presentation/widgets/build_network_image.dart';
 import 'responsive/fitted_icon.dart';
 

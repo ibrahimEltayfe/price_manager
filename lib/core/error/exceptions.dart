@@ -7,7 +7,7 @@ class ExceptionHandler implements Exception{
 
   ExceptionHandler.handle(dynamic e){
     if(e is FirebaseAuthException){
-      failure = AuthFailure(getLoginErrorMsg(e.code));
+      failure = AuthFailure(getAuthErrorMsg(e.code));
     }else if(e is FirebaseException){
       failure = UnExpectedFailure(e.message??AppErrors.unKnownError);
     }else if(e is UIDException){
@@ -18,18 +18,18 @@ class ExceptionHandler implements Exception{
   }
 }
 
-String getLoginErrorMsg(String code) {
+String getAuthErrorMsg(String code) {
   switch (code) {
     case 'user-disabled':
-      return 'This user has been disabled. contact support for help.';
+      return 'هذا البريد الإلكترونى متوقف. تواصل معنا';
     case 'user-not-found':
-      return 'Email is not found.';
+      return 'البريد الإلكترونى غير موجود';
     case 'wrong-password':
-      return 'Incorrect password, please try again.';
+      return 'كلمة السر غير صحيحة';
     case 'invalid-email':
-      return 'Email is not valid.';
+      return 'البريد الإلكترونى غير صالح';
     default:
-      return 'Login Error.. please try again';
+      return 'حدث خطأ.. برجاء المحاولة مرة اخرى';
   }
 }
 

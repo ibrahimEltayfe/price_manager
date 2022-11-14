@@ -1,22 +1,18 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:price_manager/core/constants/app_icons.dart';
 import 'package:price_manager/core/constants/app_routes.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
-import 'package:price_manager/features/profile/domain/entities/user_entity.dart';
-import 'package:price_manager/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:price_manager/features/shared/entities/user_entity.dart';
 import 'package:price_manager/reusable_components/responsive/fitted_icon.dart';
 import 'package:price_manager/reusable_components/responsive/fittted_text.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_styles.dart';
+import '../bloc/profile_cubit/profile_cubit.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
@@ -24,7 +20,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: BlocListener<ProfileBloc,ProfileState>(
+        child: BlocListener<ProfileCubit,ProfileState>(
           listener: (context, state) {
            if(state is ProfileError){
               Fluttertoast.showToast(msg: state.message,backgroundColor: AppColors.darkRed,textColor: AppColors.backgroundColor);
@@ -46,11 +42,7 @@ class Profile extends StatelessWidget {
                       text:AppStrings.changePassword,
                       iconColor: AppColors.black,
                       onTap:(){
-                        Navigator.pushNamed(
-                            context,
-                            AppRoutes.changePasswordPage,
-                            arguments: context.read<ProfileBloc>()
-                        );
+                        Navigator.pushNamed(context, AppRoutes.changePasswordPage,);
                       }
                   ),
 
@@ -60,14 +52,14 @@ class Profile extends StatelessWidget {
                       text:AppStrings.logout,
                       iconColor:AppColors.darkRed,
                       onTap:(){
-                        context.read<ProfileBloc>().add(ProfileSignOutEvent());
+                        context.read<ProfileCubit>().signOut();
                       }
                   ),
 
                 ],
               ),
 
-              BlocSelector<ProfileBloc,ProfileState,bool>(
+              BlocSelector<ProfileCubit,ProfileState,bool>(
                 selector: (state) {
                   return state is ProfileLoading;
                 },
@@ -113,9 +105,9 @@ class _BuildNameAndEmail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc,ProfileState>(
+    return BlocBuilder<ProfileCubit,ProfileState>(
       builder: (context, state) {
-        final UserEntity? user = context.read<ProfileBloc>().userEntity;
+        final UserEntity? user = context.read<ProfileCubit>().userEntity;
 
         return Column(
             children: [

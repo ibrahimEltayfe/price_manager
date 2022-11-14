@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
-
+import 'package:price_manager/features/shared/entities/product_entity.dart';
+import '../../../../../core/utils/button_active_state_changer.dart';
 import '../../../../../core/utils/image_picker_helper.dart';
 import '../../../../dashboard/domain/repositories/products_repository.dart';
-import '../../../data/models/product_model.dart';
+import '../../../../shared/models/product_model.dart';
 
 part 'product_details_event.dart';
 part 'product_details_state.dart';
@@ -19,7 +16,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
 
   late ProductEntity product;
 
-  StreamController<bool> buttonStateController = StreamController<bool>.broadcast()..sink.add(false);
+  final ButtonStateChanger buttonStateChanger = ButtonStateChanger();
   StreamController<String?> productDateInfoController = StreamController<String>();
 
   ProductDetailsBloc(this.dashboardRepository,this.imagePickerHelper) : super(ProductDetailsInitial()) {
@@ -46,7 +43,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
       results.fold(
            (failure) => emit(ProductDetailsError(failure.message)),
            (results){
-             buttonStateController.sink.add(false);
+             buttonStateChanger.changeState(false);
              getProductCreatedOrModifiedData();
              emit(const ProductDetailsUpdated('product updated'));
            }
@@ -98,7 +95,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
   @override
   Future<void> close() {
     imagePickerHelper.dispose();
-    buttonStateController.close();
+    buttonStateChanger.dispose();
     return super.close();
   }
 }

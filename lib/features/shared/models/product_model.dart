@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 
 class ProductModel extends ProductEntity{
 

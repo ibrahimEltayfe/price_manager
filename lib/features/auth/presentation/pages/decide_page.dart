@@ -29,8 +29,7 @@ class DecidePage extends StatelessWidget {
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(
-              color: AppColors.
-              secondaryColor,
+              color: AppColors.darkBlue,
             ),
           ),
         );

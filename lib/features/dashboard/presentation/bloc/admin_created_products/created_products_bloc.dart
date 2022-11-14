@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:price_manager/core/constants/app_colors.dart';
 import '../../../../../core/constants/app_errors.dart';
 import '../../../../home/data/data_sources/products_remote.dart' show productsLimit;
-import '../../../../home/domain/entities/product_entity.dart';
+import '../../../../shared/entities/product_entity.dart';
 import '../../../domain/repositories/products_repository.dart';
 part 'created_products_event.dart';
 part 'created_products_state.dart';

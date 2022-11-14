@@ -1,5 +1,4 @@
-part of 'profile_bloc.dart';
-
+part of 'profile_cubit.dart';
 abstract class ProfileState extends Equatable {
   const ProfileState();
   @override

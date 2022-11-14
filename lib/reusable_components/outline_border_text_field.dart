@@ -10,12 +10,17 @@ class OutlineBorderTextField extends StatefulWidget {
   final TextInputType? textInputType;
   final String? Function(String?) validator;
   final TextEditingController controller;
+  final bool isNormalHint;
+  final bool isObscure;
 
   const OutlineBorderTextField({
+    Key? key,
     required this.hint,
-    this.textInputType,
+    this.textInputType = TextInputType.text,
     required this.validator,
-    Key? key, required this.controller,
+    required this.controller,
+    this.isNormalHint = false,
+    this.isObscure = false,
   }) : super(key: key);
 
   @override
@@ -49,13 +54,20 @@ class _OutlineBorderTextFieldState extends State<OutlineBorderTextField> {
               keyboardType: widget.textInputType,
               textAlignVertical: TextAlignVertical.center,
               maxLines: 1,
-              textAlign: TextAlign.right,
+              textAlign:TextAlign.right,
+              cursorColor: AppColors.primaryColor,
+              cursorRadius: const Radius.circular(20),
+              obscureText: widget.isObscure,
 
               decoration: InputDecoration(
                   isDense: true,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
 
-                  suffixIcon: Padding(
+                  hintText: widget.isNormalHint? widget.hint : null,
+
+                  suffixIcon: widget.isNormalHint
+                  ?null
+                  :Padding(
                     padding: EdgeInsets.only(right: context.width*0.025),
                     child: AutoSizeText(
                       widget.hint,
@@ -68,10 +80,9 @@ class _OutlineBorderTextFieldState extends State<OutlineBorderTextField> {
 
                  suffixIconConstraints: BoxConstraints.tightFor(height: context.height*0.037),
 
-
                   contentPadding: EdgeInsets.symmetric(
                     vertical: size.height*0.021,
-                    horizontal: size.width*0.025
+                    horizontal: size.width*0.026
                 ),
 
                 border: OutlineInputBorder(

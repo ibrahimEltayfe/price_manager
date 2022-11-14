@@ -6,8 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:price_manager/core/constants/app_errors.dart';
 import 'package:price_manager/core/constants/end_points.dart';
 import 'package:price_manager/core/error/exceptions.dart';
-import 'package:price_manager/features/home/data/models/product_model.dart';
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/shared/models/product_model.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 import 'package:path/path.dart';
 
 const int productsLimit = 7;

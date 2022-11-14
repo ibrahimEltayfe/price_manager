@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/entities/product_entity.dart';
+import '../../../../shared/entities/product_entity.dart';
 import '../../../domain/repositories/products_repository.dart';
 
 part 'search_event.dart';

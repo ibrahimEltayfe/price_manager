@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:price_manager/core/constants/app_errors.dart';
 import 'package:price_manager/features/home/data/data_sources/products_remote.dart';
-import '../../../domain/entities/product_entity.dart';
+import '../../../../shared/entities/product_entity.dart';
 import '../../../domain/repositories/products_repository.dart';
 part 'home_event.dart';
 part 'home_state.dart';

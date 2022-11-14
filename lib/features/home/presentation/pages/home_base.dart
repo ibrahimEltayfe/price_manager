@@ -8,10 +8,10 @@ import 'package:price_manager/core/utils/injector.dart' as di;
 import 'package:price_manager/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:price_manager/features/home/presentation/pages/home.dart';
-import 'package:price_manager/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:price_manager/features/profile/presentation/pages/profile.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_styles.dart';
+import '../../../profile/presentation/bloc/profile_cubit/profile_cubit.dart';
 
 class HomeBase extends StatefulWidget {
   const HomeBase({Key? key}) : super(key: key);
@@ -53,14 +53,14 @@ class _HomeBaseState extends State<HomeBase> {
           children: [
             BlocProvider(
               create: (context)=> di.injector<HomeBloc>()..add(HomeLoadDataEvent()),
-              child:Home()
+              child: const Home()
             ),
 
-            Dashboard(),
+            const Dashboard(),
 
             BlocProvider(
-                create: (context)=> di.injector<ProfileBloc>()..add(ProfileFetchDataEvent()),
-                child: Profile()
+                create: (context)=> di.injector<ProfileCubit>()..getProfileNameAndEmail(),
+                child: const Profile()
             ),
 
           ],

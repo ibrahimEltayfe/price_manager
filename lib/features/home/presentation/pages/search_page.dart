@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:price_manager/core/constants/app_routes.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 import 'package:price_manager/features/home/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:price_manager/reusable_components/responsive/fittted_text.dart';
 

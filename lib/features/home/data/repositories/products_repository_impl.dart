@@ -7,7 +7,7 @@ import 'package:dartz/dartz.dart';
 import 'package:price_manager/core/error/failures.dart';
 import 'package:price_manager/features/home/data/data_sources/products_remote.dart';
 
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 
 import '../../../../core/constants/app_errors.dart';
 import '../../../../core/error/exceptions.dart';

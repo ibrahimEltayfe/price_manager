@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../home/data/models/product_model.dart';
+import '../../../shared/models/product_model.dart';
 
 abstract class DashboardRepository{
   Future<Either<Failure,List<ProductEntity>>> getAdminProducts({required bool isGetCreatedProducts,required bool isFirstFetch});

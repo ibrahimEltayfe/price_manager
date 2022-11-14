@@ -6,7 +6,9 @@ import 'package:price_manager/features/auth/presentation/pages/decide_page.dart'
 import 'package:price_manager/features/auth/presentation/pages/login_page.dart';
 import 'package:price_manager/features/dashboard/presentation/bloc/add_product/add_product_bloc.dart';
 import 'package:price_manager/features/dashboard/presentation/pages/add_product_page.dart';
-import 'package:price_manager/features/home/domain/entities/product_entity.dart';
+import 'package:price_manager/features/profile/presentation/bloc/change_password_cubit/change_password_cubit.dart';
+import 'package:price_manager/features/profile/presentation/bloc/profile_cubit/profile_cubit.dart';
+import 'package:price_manager/features/shared/entities/product_entity.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:price_manager/features/home/presentation/bloc/product_details/product_details_bloc.dart';
 import 'package:price_manager/features/home/presentation/bloc/search_bloc/search_bloc.dart';
@@ -64,7 +66,10 @@ class RoutesManager{
 
       case AppRoutes.changePasswordPage:
         return MaterialPageRoute(
-            builder: (_)=> ChangePasswordPage(),
+            builder: (_)=> BlocProvider(
+                create:(_)=> di.injector<ChangePasswordCubit>(),
+                child: ChangePasswordPage()
+            ),
             settings: settings
         );
 
