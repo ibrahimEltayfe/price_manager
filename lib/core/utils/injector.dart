@@ -5,6 +5,9 @@ import 'package:price_manager/features/dashboard/domain/repositories/products_re
 import 'package:price_manager/features/dashboard/presentation/bloc/add_product/add_product_bloc.dart';
 import 'package:price_manager/features/home/data/data_sources/products_remote.dart';
 import 'package:price_manager/features/home/domain/repositories/products_repository.dart';
+import 'package:price_manager/features/profile/data/data_sources/profile_remote.dart';
+import 'package:price_manager/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:price_manager/features/profile/domain/repositories/profile_repository.dart';
 import '../../features/dashboard/data/data_sources/products_remote.dart';
 import '../../features/dashboard/data/repositories/products_repository_impl.dart';
 import '../../features/dashboard/presentation/bloc/admin_created_products/created_products_bloc.dart';
@@ -12,6 +15,8 @@ import '../../features/dashboard/presentation/bloc/admin_modified_products/modif
 import '../../features/home/data/repositories/products_repository_impl.dart';
 import '../../features/home/presentation/bloc/home/home_bloc.dart';
 import '../../features/home/presentation/bloc/product_details/product_details_bloc.dart';
+import '../../features/home/presentation/bloc/search_bloc/search_bloc.dart';
+import '../../features/profile/presentation/bloc/profile_bloc.dart';
 import '../network_info/network_checker.dart';
 import '../../features/auth/data/data_sources/firestore_auth_remote.dart';
 import '../../features/auth/data/repositories/user_repo_impl.dart';
@@ -52,6 +57,8 @@ void init(){
   //blocs
   injector.registerFactory<HomeBloc>(() => HomeBloc(injector()));
   injector.registerFactory<ProductDetailsBloc>(() => ProductDetailsBloc(injector(),injector()));
+  injector.registerFactory<SearchBloc>(() => SearchBloc(injector()));
+
 
   //data sources
   injector.registerLazySingleton<ProductsRemote>(() => ProductsRemote());
@@ -76,4 +83,16 @@ void init(){
 
   //use cases
 
+//----------------------------------------------------------------------------------------------------
+  //! Profile
+  //blocs
+  injector.registerFactory<ProfileBloc>(() => ProfileBloc(injector()));
+
+  //data sources
+  injector.registerLazySingleton<ProfileRemote>(() => ProfileRemote());
+
+  //repositories
+  injector.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(injector(), injector()));
+
+  //use cases
 }

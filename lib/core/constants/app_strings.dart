@@ -15,13 +15,13 @@ class AppStrings {
   static const String alreadyHaveAccount = 'لديك حساب بالفعل ؟';
   static const String confirm = 'تأكيد';
 
-
-
   /* Home */
   static const String home = 'الصفحة الرئيسية';
   static const String manage = 'إدارة';
   static const String profile = 'الصفحة الشخصية';
   static const String search = 'بحث';
+  static const String delete = 'حذف';
+
 
   /* Dashboard */
   static const String clickToShowAddedProducts = 'اضغط لإظهار المنتجات التى أضفتها';

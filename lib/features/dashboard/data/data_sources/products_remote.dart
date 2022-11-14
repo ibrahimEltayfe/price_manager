@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:price_manager/core/constants/app_errors.dart';
 import 'package:price_manager/core/constants/end_points.dart';
+import 'package:price_manager/core/error/exceptions.dart';
 import 'package:price_manager/features/home/data/models/product_model.dart';
 import 'package:price_manager/features/home/domain/entities/product_entity.dart';
 import 'package:path/path.dart';
@@ -20,13 +21,12 @@ class DashboardRemote{
 
   String? get userUID => _firebaseAuth.currentUser?.uid;
 
-  Future<List<ProductEntity>> getAdminProducts({required bool getCreatedProducts}) async{
-    final QuerySnapshot<Map<String, dynamic>> products;
+  Future<List<ProductEntity>> getAdminProducts({required bool getCreatedProducts,required bool isFirstFetch}) async{
     final String? adminUid = _firebaseAuth.currentUser?.uid;
     final String fieldName;
 
     if(adminUid == null){
-      throw Exception(AppErrors.noUID);
+      throw UIDException(AppErrors.noUID);
     }
 
     if(getCreatedProducts){
@@ -35,15 +35,21 @@ class DashboardRemote{
       fieldName = "modifiedBy";
     }
 
-    if(lastProduct == null){
+    final QuerySnapshot<Map<String, dynamic>> products;
+
+    if(isFirstFetch){
       products = await _fireStore.collection(EndPoints.products)
-          .orderBy(fieldName)
-          .where(adminUid)
+          .where(fieldName,isEqualTo: adminUid)
           .limit(productsLimit)
           .get();
+
       log("from initial load :"+products.docs.length.toString());
     }else{
-      products = await _fireStore.collection(EndPoints.products).startAfterDocument(lastProduct!).limit(productsLimit).get();
+      products = await _fireStore.collection(EndPoints.products)
+          .where(fieldName,isEqualTo: adminUid)
+          .startAfterDocument(lastProduct!)
+          .limit(productsLimit)
+          .get();
       log("from pagination load :"+products.docs.length.toString());
     }
 
@@ -56,7 +62,11 @@ class DashboardRemote{
     lastProduct = products.docs.last;
 
     products.docs.map(
-      (doc) => productsList.add(ProductModel.fromMap(doc.data()))
+        (doc){
+          if(doc[fieldName] != null){
+            productsList.add(ProductModel.fromMap(doc.data()));
+          }
+        }
     ).toList();
 
     return productsList;
@@ -66,7 +76,7 @@ class DashboardRemote{
     final String? adminUid = _firebaseAuth.currentUser?.uid;
 
     if(adminUid == null){
-      throw Exception(AppErrors.noUID);
+      throw UIDException(AppErrors.noUID);
     }
 
     final doc = _fireStore.collection(EndPoints.products).doc();
@@ -75,7 +85,7 @@ class DashboardRemote{
     productModel.id = doc.id;
 
     await _fireStore.runTransaction((transaction) async{
-      if(image.path != ''){
+      if(image.path.isNotEmpty){
         var addImage = await _firebaseStorage.ref()
             .child('images/${basename(image.path)}')
             .putFile(image);
@@ -98,7 +108,7 @@ class DashboardRemote{
     final String? adminUid = _firebaseAuth.currentUser?.uid;
 
     if(adminUid == null){
-      throw Exception(AppErrors.noUID);
+      throw UIDException(AppErrors.noUID);
     }
 
     final doc = _fireStore.collection(EndPoints.products).doc(productModel.id);
@@ -132,11 +142,11 @@ class DashboardRemote{
     });
   }
   
-  Future<void> removeProduct(String productId) async{
+  Future<void> removeProduct(String productId,String image) async{
     final String? adminUid = _firebaseAuth.currentUser?.uid;
 
     if(adminUid == null){
-      throw Exception(AppErrors.noUID);
+      throw UIDException(AppErrors.noUID);
     }
 
     final doc = _fireStore.collection(EndPoints.products).doc(productId);
@@ -155,7 +165,15 @@ class DashboardRemote{
          }
       ).toList();
 
+      if(image.isNotEmpty){
+        await _firebaseStorage.refFromURL(image).delete();
+      }
+
     });
   }
 
+  Future<String?> getUserName(String uid) async{
+    final userDoc = await _fireStore.collection(EndPoints.users).doc(uid).get();
+    return userDoc.data()?["name"];
+  }
 }

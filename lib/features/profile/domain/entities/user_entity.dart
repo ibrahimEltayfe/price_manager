@@ -4,10 +4,10 @@ class UserEntity extends Equatable{
   String? name;
   String? email;
   String? uid;
-  List<String>? itemsAdded;
-  List<String>? itemsModified;
+  List<dynamic>? itemsAdded;
+  List<dynamic>? itemsModified;
 
-  UserEntity({
+   UserEntity({
     this.itemsAdded,
     this.itemsModified,
     this.name,

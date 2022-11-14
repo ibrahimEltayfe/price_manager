@@ -26,14 +26,18 @@ class ModifiedProductsBloc extends Bloc<ModifiedProductsEvent, ModifiedProductsS
 
       emit(ModifiedProductsLoading());
 
-      final result = await dashboardRepository.getAdminProducts(isGetCreatedProducts: true);
+      final result = await dashboardRepository.getAdminProducts(
+          isGetCreatedProducts: false,
+          isFirstFetch: isFirstFetch
+      );
 
       result.fold(
-              (failure)=> emit(ModifiedProductsError(failure.message)),
+       (failure)=> emit(ModifiedProductsError(failure.message)),
 
-              (results){
+        (results){
             if(isFirstFetch && results.isEmpty){
               emit(const ModifiedProductsError(AppErrors.productListIsEmpty));
+              return;
             }
 
             isFirstFetch = false;
@@ -64,5 +68,12 @@ class ModifiedProductsBloc extends Bloc<ModifiedProductsEvent, ModifiedProductsS
       return true;
     }
     return false;
+  }
+
+  void refresh(){
+    hasMore = true;
+    isFirstFetch = true;
+    products = [];
+    add(const LoadModifiedProductsEvent());
   }
 }

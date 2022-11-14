@@ -13,9 +13,7 @@ class UpdateProductDetailsEvent extends ProductDetailsEvent {
 }
 
 class InitializeProductDetailsEvent extends ProductDetailsEvent {
-  final ProductEntity product;
-  const InitializeProductDetailsEvent(this.product);
 
   @override
-  List<Object?> get props => [product];
+  List<Object?> get props => [];
 }

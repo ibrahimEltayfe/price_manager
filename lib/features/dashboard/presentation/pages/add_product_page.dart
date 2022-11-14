@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -96,6 +95,10 @@ class _AddProductPageState extends State<AddProductPage> {
 
                   SizedBox(height: context.height*0.04,),
                   _AddButton(
+                    descController:descController ,
+                    nameController: nameController,
+                    priceController:priceController,
+
                     onTap:(){
                       if(_formKey.currentState!.validate()){
                         context.read<AddProductBloc>().add(SaveProductEvent(
@@ -133,13 +136,13 @@ class _BuildImagePicker extends StatelessWidget {
         child: StreamBuilder<String>(
           stream: context.read<AddProductBloc>().imagePickerHelper.imagePickerController.stream,
           builder: (context,AsyncSnapshot<String> snapshot) {
-            final String? image = context.read<AddProductBloc>().imagePickerHelper.image;
+            final String image = context.read<AddProductBloc>().imagePickerHelper.image;
 
             if(snapshot.hasError){
               Fluttertoast.showToast(msg: snapshot.error.toString());
             }
 
-            if(image == null || image.isEmpty){
+            if(image.isEmpty){
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -185,8 +188,10 @@ class _BuildImagePicker extends StatelessWidget {
 
 class _AddButton extends StatelessWidget {
   final VoidCallback onTap;
-
-  const _AddButton({Key? key, required this.onTap,}) : super(key: key);
+  final TextEditingController nameController;
+  final TextEditingController descController;
+  final TextEditingController priceController;
+  const _AddButton({Key? key, required this.onTap, required this.nameController, required this.descController, required this.priceController,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +202,9 @@ class _AddButton extends StatelessWidget {
                 context: context,
                 text: "تمت الإضافة",
             );
+            nameController.clear();
+            descController.clear();
+            priceController.clear();
           }else if(state is AddProductError){
             statusSnackBar(
                 context: context,

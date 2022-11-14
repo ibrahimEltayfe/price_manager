@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:price_manager/core/constants/app_colors.dart';
 import '../../../../../core/constants/app_errors.dart';
 import '../../../../home/data/data_sources/products_remote.dart' show productsLimit;
 import '../../../../home/domain/entities/product_entity.dart';
@@ -20,6 +22,8 @@ class CreatedProductsBloc extends Bloc<CreatedProductsEvent, CreatedProductsStat
   bool isFirstFetch = true;
   List<ProductEntity> products = [];
 
+  StreamController<List<ProductEntity>> productsController = StreamController<List<ProductEntity>>.broadcast();
+
   CreatedProductsBloc(this.dashboardRepository) : super(CreatedProductsInitial()){
     on<LoadCreatedProductsEvent>((event, emit) async{
       if(hasMore == false) {
@@ -28,14 +32,18 @@ class CreatedProductsBloc extends Bloc<CreatedProductsEvent, CreatedProductsStat
 
       emit(CreatedProductsLoading());
 
-      final result = await dashboardRepository.getAdminProducts(isGetCreatedProducts: true);
+      final result = await dashboardRepository.getAdminProducts(
+          isGetCreatedProducts: true,
+          isFirstFetch: isFirstFetch
+      );
 
       result.fold(
-              (failure)=> emit(CreatedProductsError(failure.message)),
+           (failure)=> emit(CreatedProductsError(failure.message)),
 
-              (results){
+           (results){
             if(isFirstFetch && results.isEmpty){
               emit(const CreatedProductsError(AppErrors.productListIsEmpty));
+              return;
             }
 
             isFirstFetch = false;
@@ -45,12 +53,29 @@ class CreatedProductsBloc extends Bloc<CreatedProductsEvent, CreatedProductsStat
             }
 
             products.addAll(results);
+            productsController.sink.add(products);
             emit(CreatedProductsDataFetched());
 
           }
       );
 
     },transformer: droppable());
+
+    on<DeleteCreatedProductsEvent>((event, emit) async{
+      final results = await dashboardRepository.removeProduct(
+        products[event.index].id??'',
+        products[event.index].image??''
+      );
+
+      results.fold(
+        (failure)=>emit(ProductDeletedError(failure.message)),
+        (_){
+            products.removeAt(event.index);
+            productsController.sink.add(products);
+            emit(ProductDeleted());
+          }
+      );
+    });
 
   }
   bool handleScrollPagination({
@@ -65,5 +90,18 @@ class CreatedProductsBloc extends Bloc<CreatedProductsEvent, CreatedProductsStat
       return true;
     }
     return false;
+  }
+
+  void refresh(){
+    hasMore = true;
+    isFirstFetch = true;
+    products = [];
+    add(const LoadCreatedProductsEvent());
+  }
+
+  @override
+  Future<void> close() {
+    productsController.close();
+    return super.close();
   }
 }

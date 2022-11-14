@@ -20,11 +20,11 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
   late ProductEntity product;
 
   StreamController<bool> buttonStateController = StreamController<bool>.broadcast()..sink.add(false);
+  StreamController<String?> productDateInfoController = StreamController<String>();
 
   ProductDetailsBloc(this.dashboardRepository,this.imagePickerHelper) : super(ProductDetailsInitial()) {
     on<InitializeProductDetailsEvent>((event, emit) async{
-      product = event.product;
-      imagePickerHelper.init(img:event.product.image,isNetwork: true);
+      imagePickerHelper.init(img:product.image,isNetwork: true);
       emit(ProductDetailsSetInitialData());
     });
 
@@ -40,23 +40,59 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
         modifiedBy: dashboardRepository.userUID,
       );
 
+      product = productModel;
+
       final results = await dashboardRepository.updateProduct(productModel,imagePickerHelper.image);
       results.fold(
            (failure) => emit(ProductDetailsError(failure.message)),
-           (results) => emit(const ProductDetailsUpdated('product updated'))
+           (results){
+             buttonStateController.sink.add(false);
+             getProductCreatedOrModifiedData();
+             emit(const ProductDetailsUpdated('product updated'));
+           }
       );
 
     });
+  }
 
-    /*on<RemoveProductEvent>((event, emit) async{
-      emit(ProductDetailsLoading());
+  dateFormatStyle(date){
+    return '${date.hour}:${date.minute} - ${date.year}-${date.month}-${date.day} ';
+  }
 
-      final results = await dashboardRepository.removeProduct(event.productId);
-      results.fold(
-         (failure) => emit(ProductDetailsError(failure.message)),
-         (results) => emit(const ProductDetailsRemove('product removed'))
-      );
-    });*/
+  Future<void> getProductCreatedOrModifiedData() async{
+    String text = '';
+    DateTime date;
+
+      if(product.modifiedBy == null || product.modifiedBy!.isEmpty){
+        final results = await dashboardRepository.getUserName(product.createdBy??'');
+
+        results.fold(
+          (failure){
+            productDateInfoController.sink.add(failure.message);
+          },
+          (userName){
+
+            date =  product.createdAt!.toDate();
+            text = " تم الانشاء بواسطة " + (userName??'...') + "  فى  " + dateFormatStyle(date);
+            productDateInfoController.sink.add(text);
+          }
+        );
+
+      }else{
+        final results = await dashboardRepository.getUserName(product.modifiedBy??'');
+
+        results.fold(
+            (failure){
+              productDateInfoController.sink.add(failure.message);
+            },
+            (userName){
+              date =  product.modifiedAt!.toDate();
+              text = " تم التعديل بواسطة " + (userName??'...') + "  فى  " + dateFormatStyle(date);
+              productDateInfoController.sink.add(text);
+            }
+        );
+
+      }
   }
 
   @override

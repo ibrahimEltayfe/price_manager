@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:price_manager/core/constants/end_points.dart';
-import '../models/user_model.dart';
+import '../../../profile/data/models/user_model.dart';
 
 class AuthRemote{
  final FirebaseFirestore _fs = FirebaseFirestore.instance;

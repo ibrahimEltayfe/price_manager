@@ -16,6 +16,8 @@ class AppIcons{
   static const IconData arrowLeft = FontAwesomeIcons.arrowLeft;
   static const IconData roundedArrowLeft = FontAwesomeIcons.angleLeft;
 
+  static const IconData reload = FontAwesomeIcons.rotateRight;
+
 
 
   AppIcons._();

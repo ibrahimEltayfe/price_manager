@@ -28,8 +28,10 @@ class ProductsRepositoryImpl implements ProductsRepository{
   }
 
   @override
-  Future<Either<Failure, List<ProductEntity>>> searchForProducts(String searchText) {
-    throw UnimplementedError();//todo
+  Future<Either<Failure, List<ProductEntity>>> searchForProducts(String searchText) async{
+    return await _handleFailures<List<ProductEntity>>(
+       ()=> _productsRemote.searchForProducts(searchText)
+    );
   }
 
   Future<Either<Failure, resultType>> _handleFailures<resultType>(Future<resultType> Function() task) async{
@@ -45,4 +47,6 @@ class ProductsRepositoryImpl implements ProductsRepository{
       return const Left(NoInternetFailure(AppErrors.noInternet));
     }
   }
+
+
 }

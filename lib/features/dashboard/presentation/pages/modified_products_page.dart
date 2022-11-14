@@ -23,6 +23,10 @@ class AdminModifiedProducts extends StatelessWidget {
          return BlocBuilder<ModifiedProductsBloc,ModifiedProductsState>(
            builder: (context, state) {
              return ProductsGridView(
+               onRefresh: ()async{
+                 context.read<ModifiedProductsBloc>().refresh();
+               },
+               onLongPress: (_,i){},
                onProductTap: (index) {
                    Navigator.pushNamed(
                        context,
@@ -48,7 +52,8 @@ class AdminModifiedProducts extends StatelessWidget {
            },
          );
 
-       }else{
+       }
+       else{
          return ShowProductsButton(
            onTap: (){
              valueNotifier.value = true;

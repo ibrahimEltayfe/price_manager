@@ -1,13 +1,12 @@
 import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:price_manager/core/constants/app_icons.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
-
+import 'package:price_manager/reusable_components/responsive/fittted_text.dart';
 import '../core/constants/app_colors.dart';
-import '../core/constants/app_routes.dart';
 import '../core/constants/app_styles.dart';
 import '../features/home/domain/entities/product_entity.dart';
 import '../features/home/presentation/widgets/build_network_image.dart';
@@ -21,6 +20,8 @@ class ProductsGridView extends StatelessWidget {
   final bool isFirstFetch;
   final bool Function(ScrollNotification) onNotification;
   final void Function(int) onProductTap;
+  final void Function(GlobalKey,int) onLongPress;
+  final Future<void> Function() onRefresh;
   final List<ProductEntity> products;
 
   const ProductsGridView({Key? key,
@@ -31,20 +32,23 @@ class ProductsGridView extends StatelessWidget {
     required this.errorMessage,
     required this.isFirstFetch,
     required this.onNotification,
-    required this.onProductTap
+    required this.onProductTap,
+    required this.onLongPress, required this.onRefresh
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //if first fetch
     if (isFirstFetch) {
-      if (errorState) {
-        return Center(child: Text(errorMessage),);
-      } else if (loadingState) {
-        return const Center(child: CircularProgressIndicator(
-          color: AppColors.darkBlue,
-        ),
+
+      if (loadingState) {
+        return const Center(
+          child: CircularProgressIndicator(color: AppColors.darkBlue,),
         );
+      }
+
+      if (errorState) {
+        return _BuildFirstBuildErrorMessage(message: errorMessage,onRefresh: onRefresh,);
       }
     }
 
@@ -55,7 +59,13 @@ class ProductsGridView extends StatelessWidget {
             onNotification: (scrollNotification) {
               return onNotification(scrollNotification);
             },
-            child: _BuildGridView(products: products,onProductTap: onProductTap,),
+            child: _BuildGridView(
+              products: products,
+              onProductTap: onProductTap,
+              onLongPress: onLongPress,
+              onRefresh: onRefresh,
+              keys: List.generate(products.length, (index) => GlobalKey()),
+            ),
           ),
 
           if(loadingState)
@@ -83,7 +93,10 @@ class ProductsGridView extends StatelessWidget {
 class _BuildGridView extends StatelessWidget {
   final List<ProductEntity> products;
   final void Function(int) onProductTap;
-  const _BuildGridView({Key? key, required this.products, required this.onProductTap}) : super(key: key);
+  final void Function(GlobalKey,int) onLongPress;
+  final List<GlobalKey> keys;
+  final Future<void> Function() onRefresh;
+  const _BuildGridView({Key? key, required this.products, required this.onProductTap, required this.keys, required this.onLongPress, required this.onRefresh}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +107,7 @@ class _BuildGridView extends StatelessWidget {
             textDirection: TextDirection.rtl,
             child: RefreshIndicator(
               triggerMode: RefreshIndicatorTriggerMode.onEdge,
-              onRefresh: () async{
-                context.read<HomeBloc>().reset();
-                context.read<HomeBloc>().add(HomeLoadDataEvent());
-              },
+              onRefresh: onRefresh,
 
               color: AppColors.primaryColor,
               child: GridView.builder(
@@ -122,10 +132,15 @@ class _BuildGridView extends StatelessWidget {
 
                 itemBuilder: (context, i) {
                   return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: (){
                       onProductTap(i);
                     },
+                    onLongPress:(){
+                      onLongPress(keys[i],i);
+                    },
                     child: Container(
+                      key: keys[i],
                       decoration: getContainerDecoration(offset: Offset(0, context.height * 0.001)),
                       child: Column(
                         children: [
@@ -190,6 +205,7 @@ class _BuildAutoSizeText extends StatelessWidget {
   final double fontSize;
   final Alignment? alignment;
   final int? maxLines;
+  final TextAlign? textAlign;
 
   const _BuildAutoSizeText(
       {Key? key,
@@ -197,7 +213,7 @@ class _BuildAutoSizeText extends StatelessWidget {
         this.alignment,
         required this.title,
         required this.textStyle,
-        required this.fontSize})
+        required this.fontSize, this.textAlign})
       : super(key: key);
 
   @override
@@ -212,7 +228,7 @@ class _BuildAutoSizeText extends StatelessWidget {
           maxLines: maxLines ?? 1,
           minFontSize: fontSize,
           maxFontSize: fontSize,
-          textAlign: TextAlign.right,
+          textAlign: textAlign??TextAlign.right,
           overflow: TextOverflow.ellipsis,
           textDirection: TextDirection.rtl,
         ),
@@ -302,4 +318,47 @@ class _BuildLoadingWidget extends StatelessWidget {
           ),
         ));
   }
+}
+
+class _BuildFirstBuildErrorMessage extends StatelessWidget {
+  final String message;
+  final Future<void> Function() onRefresh;
+  const _BuildFirstBuildErrorMessage({Key? key, required this.message, required this.onRefresh}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _BuildAutoSizeText(
+            title: message,
+            textStyle: getBoldTextStyle() ,
+            fontSize: 20,
+            alignment: Alignment.center,
+            textAlign: TextAlign.center,
+            maxLines: 3,
+          ),
+
+          SizedBox(height: context.height*0.025,),
+
+          GestureDetector(
+            onTap: (){
+              onRefresh();
+            },
+            child: FittedIcon(
+                height: context.height*0.04,
+                width: context.width*0.2,
+                icon: AppIcons.reload,
+                color: AppColors.primaryColor
+            ),
+          )
+        ],
+      )
+    );
+  }
+}
+
+enum PopUpMenuItems{
+  delete
 }

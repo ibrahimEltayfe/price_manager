@@ -9,5 +9,7 @@ class AppRoutes {
 
   static const String changePasswordPage = '/changePassword';
 
+  static const String searchPage = '/searchPage';
+
 }
 

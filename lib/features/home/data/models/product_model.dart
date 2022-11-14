@@ -13,7 +13,8 @@ class ProductModel extends ProductEntity{
     super.createdAt,
     super.createdBy,
     super.modifiedAt,
-    super.modifiedBy
+    super.modifiedBy,
+    super.searchCases
   });
 
   factory ProductModel.fromMap(Map<String,dynamic> data) {
@@ -41,6 +42,8 @@ class ProductModel extends ProductEntity{
     map['createdBy'] = createdBy;
     map['modifiedAt'] = modifiedAt;
     map['modifiedBy'] = modifiedBy;
+    map['searchCases'] = searchCases;
+
     return map;
   }
 
@@ -52,6 +55,7 @@ class ProductModel extends ProductEntity{
     map['price'] = price;
     map['modifiedAt'] = modifiedAt;
     map['modifiedBy'] = modifiedBy;
+    map['searchCases'] = searchCases;
     return map;
   }
 

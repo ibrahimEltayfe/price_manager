@@ -9,6 +9,8 @@ import 'package:price_manager/features/dashboard/presentation/pages/add_product_
 import 'package:price_manager/features/home/domain/entities/product_entity.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:price_manager/features/home/presentation/bloc/product_details/product_details_bloc.dart';
+import 'package:price_manager/features/home/presentation/bloc/search_bloc/search_bloc.dart';
+import 'package:price_manager/features/home/presentation/pages/search_page.dart';
 import 'package:price_manager/features/profile/presentation/pages/change_password_page.dart';
 import 'core/constants/app_routes.dart';
 import 'features/home/presentation/pages/home_base.dart';
@@ -52,7 +54,9 @@ class RoutesManager{
         return MaterialPageRoute(
             builder: (_)=> BlocProvider<ProductDetailsBloc>(
                 create: (_)=>di.injector<ProductDetailsBloc>()
-                  ..add(InitializeProductDetailsEvent(settings.arguments as ProductEntity)),
+                  ..product = settings.arguments as ProductEntity
+                  ..add(InitializeProductDetailsEvent())
+                  ..getProductCreatedOrModifiedData(),
                 child: ProductDetailsPage()
             ),
             settings: settings
@@ -61,6 +65,15 @@ class RoutesManager{
       case AppRoutes.changePasswordPage:
         return MaterialPageRoute(
             builder: (_)=> ChangePasswordPage(),
+            settings: settings
+        );
+
+      case AppRoutes.searchPage:
+        return MaterialPageRoute(
+            builder: (_)=> BlocProvider<SearchBloc>(
+                create: (_)=>di.injector<SearchBloc>(),
+                child: SearchPage()
+            ),
             settings: settings
         );
 

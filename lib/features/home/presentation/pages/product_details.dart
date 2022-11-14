@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:price_manager/core/constants/app_icons.dart';
 import 'package:price_manager/core/constants/app_strings.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
-import 'package:price_manager/features/dashboard/presentation/bloc/add_product/add_product_bloc.dart';
 import 'package:price_manager/features/home/domain/entities/product_entity.dart';
 import 'package:price_manager/features/home/presentation/bloc/product_details/product_details_bloc.dart';
 import 'package:price_manager/reusable_components/status_snackbar.dart';
@@ -91,12 +91,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           child: Stack(
             children: [
               //image
-              Positioned(
-                  top: context.height*0.05,
-                  child: _BuildProductImage()
-              ),
-
-              //image action buttons
+               const _BuildProductImage(),
+              
+              //edit image action buttons
               Positioned(
                 right: context.width*0.02,
                 top: context.height*0.24,
@@ -110,6 +107,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
               ),
 
+              //delete image action buttons
               Positioned(
                 right: context.width*0.02,
                 top: context.height*0.3,
@@ -123,80 +121,38 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
               ),
 
+              _BottomSheet(
+                nameController:nameController ,
+                descController:descController ,
+                priceController:priceController ,
+                formKey: _formKey,
+              ),
+
+              //return button
               Positioned(
-                bottom: 0,
-                child: Container(
-                  width: context.width,
-                  height: context.height * 0.61,
-                  decoration: getContainerDecoration(
-                    offset: Offset(0,-context.height*0.001),
-                    borderRadius: 25,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.width*0.03,
-                      vertical: context.height*0.05
+                left: context.width*0.018,
+                top: context.height*0.018,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: context.width*0.12,
+                    height: context.height*0.056,
+                    decoration: getContainerDecoration(
+                      offset: Offset(0,context.height*0.003),
+                      borderRadius: 15
                     ),
-                    children: [
-                      OutlineBorderTextField(
-                        controller: nameController,
-                        validator: (value) {
-                          if(value == null || value.isEmpty){
-                            return 'هذا الحقل مطلوب';
-                          }
-
-                          return null;
-                        },
-                        hint: AppStrings.productName,
-                        textInputType: TextInputType.text,
-                      ),
-
-                      SizedBox(height: context.height*0.03,),
-                      OutlineBorderTextField(
-                        controller: descController,
-                        validator: (value) {
-                          return null;
-                        },
-                        hint: AppStrings.desc,
-                        textInputType: TextInputType.text,
-                      ),
-
-                      SizedBox(height: context.height*0.03,),
-                      OutlineBorderTextField(
-                        controller: priceController,
-                        validator: (value) {
-                          if(value == null || value.isEmpty){
-                            return 'هذا الحقل مطلوب';
-                          }
-
-                          return null;
-                        },
-                        hint: AppStrings.price,
-                        textInputType: TextInputType.number,
-                      ),
-
-                      SizedBox(height: context.height*0.05,),
-
-                      _EditButton(
-                        onTap: (){
-                          if(_formKey.currentState!.validate()){
-                             final ProductEntity product = context.read<ProductDetailsBloc>().product;
-
-                             product.name = nameController.text;
-                             product.desc = descController.text;
-                             product.price = priceController.text;
-
-                             context.read<ProductDetailsBloc>().add(UpdateProductDetailsEvent(product));
-                          }
-                      }),
-
-
-                      SizedBox(height: MediaQuery.of(context).viewInsets.bottom,)
-
-                    ],
+                    child: FractionallyIcon(
+                      heightFactor: 0.42,
+                      widthFactor: 0.42,
+                      color: AppColors.black,
+                      icon: AppIcons.arrowLeft,
+                    ),
                   ),
-                ),
+                )
               )
+              
 
             ],
           ),
@@ -212,38 +168,42 @@ class _BuildProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: context.height * 0.265,
-      width: context.width,
-      child: StreamBuilder<String>(
-          stream: context.read<ProductDetailsBloc>().imagePickerHelper.imagePickerController.stream,
-          builder: (context,AsyncSnapshot<String> snapshot) {
+    return Positioned(
+      top: context.height*0.05,
 
-            final String image = context.read<ProductDetailsBloc>().imagePickerHelper.image;
-            final bool isNetwork = context.read<ProductDetailsBloc>().imagePickerHelper.isNetworkImage;
+      child: SizedBox(
+        height: context.height * 0.265,
+        width: context.width,
+        child: StreamBuilder<String>(
+            stream: context.read<ProductDetailsBloc>().imagePickerHelper.imagePickerController.stream,
+            builder: (context,AsyncSnapshot<String> snapshot) {
 
-            if(snapshot.hasError){
-              Fluttertoast.showToast(msg: snapshot.error.toString());
+              final String image = context.read<ProductDetailsBloc>().imagePickerHelper.image;
+              final bool isNetwork = context.read<ProductDetailsBloc>().imagePickerHelper.isNetworkImage;
+
+              if(snapshot.hasError){
+                Fluttertoast.showToast(msg: snapshot.error.toString());
+              }
+
+              if(image.isEmpty){
+                return const FractionallyIcon(
+                    heightFactor: 0.5,
+                    widthFactor: 0.5,
+                    icon: FontAwesomeIcons.image,
+                    color: AppColors.darkBlue
+                );
+              }
+
+              if(isNetwork){
+                return BuildNetworkImage(image);
+              }else{
+                return FittedBox(
+                  child: Image.file(File(image)),
+                );
+              }
+
             }
-
-            if(image.isEmpty){
-              return const FractionallyIcon(
-                  heightFactor: 0.5,
-                  widthFactor: 0.5,
-                  icon: FontAwesomeIcons.image,
-                  color: AppColors.darkBlue
-              );
-            }
-
-            if(isNetwork){
-              return BuildNetworkImage(image);
-            }else{
-              return FittedBox(
-                child: Image.file(File(image)),
-              );
-            }
-
-          }
+        ),
       ),
     );
   }
@@ -288,6 +248,118 @@ class _BuildImageActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class _BottomSheet extends StatelessWidget {
+  final TextEditingController nameController;
+  final TextEditingController descController;
+  final TextEditingController priceController;
+  final GlobalKey<FormState> formKey;
+
+  const _BottomSheet({Key? key, required this.nameController, required this.descController, required this.priceController, required this.formKey}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 0,
+      child: Container(
+        width: context.width,
+        height: context.height * 0.61,
+        decoration: getContainerDecoration(
+          offset: Offset(0,-context.height*0.001),
+          borderRadius: 25,
+        ),
+        child: ListView(
+          padding: EdgeInsets.symmetric(
+              horizontal: context.width*0.03,
+              vertical: context.height*0.05
+          ),
+          children: [
+            OutlineBorderTextField(
+              controller: nameController,
+              validator: (value) {
+                if(value == null || value.isEmpty){
+                  return 'هذا الحقل مطلوب';
+                }
+
+                return null;
+              },
+              hint: AppStrings.productName,
+              textInputType: TextInputType.text,
+            ),
+
+            SizedBox(height: context.height*0.03,),
+            OutlineBorderTextField(
+              controller: descController,
+              validator: (value) {
+                return null;
+              },
+              hint: AppStrings.desc,
+              textInputType: TextInputType.text,
+            ),
+
+            SizedBox(height: context.height*0.03,),
+            OutlineBorderTextField(
+              controller: priceController,
+              validator: (value) {
+                if(value == null || value.isEmpty){
+                  return 'هذا الحقل مطلوب';
+                }
+
+                return null;
+              },
+              hint: AppStrings.price,
+              textInputType: TextInputType.number,
+            ),
+
+            SizedBox(height: context.height*0.04,),
+
+            StreamBuilder<String?>(
+              stream: context.read<ProductDetailsBloc>().productDateInfoController.stream,
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,),);
+                }
+
+                if(snapshot.data == null){
+                  return const SizedBox.shrink();
+                }
+
+                return AutoSizeText(
+                  snapshot.data??'',
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  minFontSize: 16,
+                  maxFontSize: 16,
+                  style: getBoldTextStyle(fontWeight: FontWeight.w400),
+                );
+              }
+            ),
+
+            SizedBox(height: context.height*0.02,),
+
+            _EditButton(
+                onTap: (){
+                  if(formKey.currentState!.validate()){
+                    final ProductEntity product = context.read<ProductDetailsBloc>().product;
+
+                    product.name = nameController.text;
+                    product.desc = descController.text;
+                    product.price = priceController.text;
+
+                    context.read<ProductDetailsBloc>().add(UpdateProductDetailsEvent(product));
+                  }
+                }),
+
+
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom,)
+
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
 class _EditButton extends StatelessWidget {
@@ -346,3 +418,4 @@ class _EditButton extends StatelessWidget {
     );
   }
 }
+

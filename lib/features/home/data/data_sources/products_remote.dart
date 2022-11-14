@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:price_manager/core/constants/end_points.dart';
 import 'package:price_manager/features/home/data/models/product_model.dart';
 import 'package:price_manager/features/home/domain/entities/product_entity.dart';
@@ -31,6 +29,25 @@ class ProductsRemote{
 
     lastProduct = products.docs.last;
 
+    products.docs.map(
+      (doc) => productsList.add(ProductModel.fromMap(doc.data()))
+    ).toList();
+
+    return productsList;
+  }
+
+  Future<List<ProductEntity>> searchForProducts(String query) async{
+    final QuerySnapshot<Map<String, dynamic>> products;
+    List<ProductEntity> productsList = [];
+
+    products = await _fireStore.collection(EndPoints.products).where(
+      "searchCases",arrayContains: query
+    ).get();
+
+    if(products.docs.isEmpty){
+      return productsList;
+    }
+    
     products.docs.map(
       (doc) => productsList.add(ProductModel.fromMap(doc.data()))
     ).toList();

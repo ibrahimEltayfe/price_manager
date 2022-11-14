@@ -1,13 +1,9 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:price_manager/core/constants/app_errors.dart';
 import 'package:price_manager/features/home/data/data_sources/products_remote.dart';
-import 'package:price_manager/features/home/data/models/product_model.dart';
 import '../../../domain/entities/product_entity.dart';
 import '../../../domain/repositories/products_repository.dart';
 part 'home_event.dart';
@@ -38,6 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         (results){
             if(isFirstFetch && results.isEmpty){
               emit(const HomeError(AppErrors.productListIsEmpty));
+              return;
             }
 
              isFirstFetch = false;
@@ -74,5 +71,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     hasMore = true;
     isFirstFetch = true;
     products = [];
+  }
+
+  void refresh(){
+    reset();
+    add(HomeLoadDataEvent());
   }
 }

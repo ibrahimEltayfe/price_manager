@@ -13,18 +13,19 @@ import 'package:price_manager/core/utils/injector.dart' as di;
 import 'package:price_manager/core/utils/shared_pref.dart';
 import 'app_routers.dart';
 import 'core/constants/app_colors.dart';
+import 'core/constants/app_errors.dart';
 import 'core/constants/app_routes.dart';
+import 'features/profile/data/data_sources/profile_remote.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //initialize firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   //local firebase
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080,sslEnabled: false);
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-  await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+  //FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080,sslEnabled: false);
+  //await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  //await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
 
   //GetIt injector
   di.init();

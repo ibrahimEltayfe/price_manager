@@ -10,7 +10,9 @@ class ExceptionHandler implements Exception{
       failure = AuthFailure(getLoginErrorMsg(e.code));
     }else if(e is FirebaseException){
       failure = UnExpectedFailure(e.message??AppErrors.unKnownError);
-    }else{
+    }else if(e is UIDException){
+      failure = NoUIDFailure(e.message);
+    } else{
       failure = const UnExpectedFailure(AppErrors.unKnownError);
     }
   }
@@ -29,4 +31,9 @@ String getLoginErrorMsg(String code) {
     default:
       return 'Login Error.. please try again';
   }
+}
+
+class UIDException implements Exception{
+  final String message;
+  UIDException(this.message);
 }

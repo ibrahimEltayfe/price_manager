@@ -26,22 +26,36 @@ class DashboardRepositoryImpl implements DashboardRepository{
     return await _handleFailures(
       () async{
         productModel.createdAt = await _getCurrentDate();
+
+        final List<String> productSearchCases = _searchCases([
+          productModel.name??'',
+          productModel.desc??''
+        ]);
+
+        productModel.searchCases = productSearchCases;
+
         return _dashboardRemote.addProduct(productModel,imageFile);
       }
     );
   }
 
   @override
-  Future<Either<Failure, List<ProductEntity>>> getAdminProducts({required bool isGetCreatedProducts}) async{
+  Future<Either<Failure, List<ProductEntity>>> getAdminProducts({
+    required bool isGetCreatedProducts,
+    required bool isFirstFetch
+  }) async{
     return await _handleFailures(
-        () => _dashboardRemote.getAdminProducts(getCreatedProducts:isGetCreatedProducts)
+        () => _dashboardRemote.getAdminProducts(
+            getCreatedProducts:isGetCreatedProducts,
+            isFirstFetch: isFirstFetch
+        )
     );
   }
 
   @override
-  Future<Either<Failure, void>> removeProduct(String productId) async{
+  Future<Either<Failure, void>> removeProduct(String productId,String image) async{
     return await _handleFailures(
-       () => _dashboardRemote.removeProduct(productId)
+       () => _dashboardRemote.removeProduct(productId,image)
     );
   }
 
@@ -50,8 +64,23 @@ class DashboardRepositoryImpl implements DashboardRepository{
     return await _handleFailures(
       () async{
         productModel.modifiedAt = await _getCurrentDate();
+
+        final List<String> productSearchCases = _searchCases([
+          productModel.name??'',
+          productModel.desc??''
+        ]);
+
+        productModel.searchCases = productSearchCases;
+
         _dashboardRemote.updateProduct(productModel,newImage);
       }
+    );
+  }
+
+  @override
+  Future<Either<Failure, String?>> getUserName(String uid) async{
+    return await _handleFailures<String?>(
+        ()=> _dashboardRemote.getUserName(uid)
     );
   }
 
@@ -68,9 +97,8 @@ class DashboardRepositoryImpl implements DashboardRepository{
       return const Left(NoInternetFailure(AppErrors.noInternet));
     }
   }
-}
 
-Future<Timestamp?> _getCurrentDate() async{
+  Future<Timestamp?> _getCurrentDate() async{
     DateTime currentDate = await NTP.now().catchError((e,s){
       log("from ntp error: ${e.toString()}");
       return DateTime.now();
@@ -79,4 +107,54 @@ Future<Timestamp?> _getCurrentDate() async{
     Timestamp currentTimestamp = Timestamp.fromDate(currentDate);
     return currentTimestamp;
 
+  }
+
+  List<String> _searchCases(List<String> queries){
+    //arabic version - for english take care of capital letters..
+
+    //split query into sub queries and words
+    final List<String> wordsList = [];
+
+    for(String singleQuery in queries){
+      final splitItems = singleQuery.trim().split(' ');
+
+      String lastCombination = "";
+
+      if(splitItems.length == 1){
+        wordsList.add(splitItems[0]);
+      }else{
+        for(int i = 0; i < splitItems.length; i++){
+          lastCombination = splitItems[i];
+
+          for(int j = i+1; j < splitItems.length; j++){
+            lastCombination += ' ${splitItems[j]}';
+          }
+
+          wordsList.add(lastCombination.trim());
+        }
+      }
+    }
+
+    wordsList.add(queries.join(' '));
+
+    //set search cases
+    List<String> cases = [];
+    String temp = "";
+
+    for(String word in wordsList){
+      temp = "";
+
+      for (int i = 0; i < word.length; i++) {
+        temp = temp + word[i];
+        if(!cases.contains(temp)){
+          cases.add(temp);
+        }
+      }
+    }
+
+    return cases;
+
+  }
+
 }
+

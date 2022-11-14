@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:price_manager/core/extensions/mediaquery_size.dart';
 import 'package:price_manager/features/home/data/models/product_model.dart';
 import 'package:price_manager/features/home/presentation/bloc/home/home_bloc.dart';
+import 'package:price_manager/reusable_components/dialogs/show_menu.dart';
 import 'package:price_manager/reusable_components/responsive/fitted_icon.dart';
 import 'package:price_manager/reusable_components/products_gridview.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -13,7 +14,7 @@ import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_styles.dart';
 import '../../../../reusable_components/responsive/fractionally_icon.dart';
-import '../../domain/entities/product_entity.dart';
+import '../../../../reusable_components/responsive/fractionally_text.dart';
 
 class Home extends StatelessWidget{
   const Home({super.key});
@@ -31,6 +32,10 @@ class Home extends StatelessWidget{
     child: BlocBuilder<HomeBloc,HomeState>(
       builder: (context, state) {
         return ProductsGridView(
+          onRefresh: () async{
+            context.read<HomeBloc>().refresh();
+          },
+          onLongPress: (_,i){},
           onProductTap: (index) {
             Navigator.pushNamed(
                 context,
@@ -63,44 +68,56 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.width * 0.032),
-      child: Container(
-          width: context.width,
-          height: context.height * 0.07,
+    return GestureDetector(
+      behavior:HitTestBehavior.translucent ,
+      onTap: (){
+        Navigator.pushNamed(context, AppRoutes.searchPage);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: context.width * 0.032),
+        child: Container(
+            width: context.width,
+            height: context.height * 0.07,
 
-          decoration: getContainerDecoration(
-              offset: Offset(0, context.height * 0.004),
-              borderRadius: 15,
-              blurRadius: 6
-          ),
-
-          child: TextField(
-            textInputAction: TextInputAction.done,
-            textAlignVertical: TextAlignVertical.bottom,
-            textAlign: TextAlign.right,
-            cursorRadius: const Radius.circular(10),
-            cursorColor: AppColors.semiBlack,
-            style: getRegularTextStyle(),
-
-            decoration: InputDecoration(
-              isDense: true,
-              suffixIcon: Padding(
-                padding: EdgeInsets.only(right: context.width * 0.04),
-                child: const FractionallyIcon(
-                  widthFactor: 0.1,
-                  heightFactor: 0.4,
-                  color: AppColors.primaryColor,
-                  icon: AppIcons.search,
-                ),
-              ),
-
-              hintText: AppStrings.search,
-              filled: false,
-              enabledBorder: getTextFieldRadiusBorder(),
-              border: getTextFieldRadiusBorder(),
+            decoration: getContainerDecoration(
+                offset: Offset(0, context.height * 0.004),
+                borderRadius: 15,
+                blurRadius: 6
             ),
-          )),
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: context.width * 0.04),
+                    child: FractionallyText(
+                      widthFactor: 0.21,
+                      heightFactor: 0.7,
+                      text: AppStrings.search,
+                      textStyle: getRegularTextStyle(color: AppColors.semiBlack),
+                    ),
+                  ),
+                ),
+
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: context.width * 0.05),
+                    child: const FractionallyIcon(
+                      widthFactor: 0.15,
+                      heightFactor: 0.4,
+                      color: AppColors.primaryColor,
+                      icon: AppIcons.search,
+                    ),
+                  ),
+                ),
+
+              ],
+            )
+
+
+      ),
+     )
     );
   }
 }

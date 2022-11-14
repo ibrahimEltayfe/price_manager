@@ -35,7 +35,11 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
       final results = await dashboardRepository.addProduct(productModel,File(imagePickerHelper.image??''));
       results.fold(
          (failure) => emit(AddProductError(failure.message)),
-         (results) => emit(AddProductDataSaved())
+         (results) {
+           emit(AddProductDataSaved());
+           imagePickerHelper.image='';
+           imagePickerHelper.imagePickerController.sink.add('');
+         }
       );
     });
 

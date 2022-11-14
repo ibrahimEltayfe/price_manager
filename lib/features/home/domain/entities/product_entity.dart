@@ -10,6 +10,7 @@ class ProductEntity{
   Timestamp? createdAt;
   String? modifiedBy;
   Timestamp? modifiedAt;
+  List<String>? searchCases;
 
   ProductEntity(
       {
@@ -21,7 +22,8 @@ class ProductEntity{
         required this.createdBy,
         required this.createdAt,
         required this.modifiedBy,
-        required this.modifiedAt
+        required this.modifiedAt,
+        this.searchCases
       }
   );
 

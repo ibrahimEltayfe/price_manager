@@ -7,9 +7,11 @@ import '../../../../core/error/failures.dart';
 import '../../../home/data/models/product_model.dart';
 
 abstract class DashboardRepository{
-  Future<Either<Failure,List<ProductEntity>>> getAdminProducts({required bool isGetCreatedProducts});
+  Future<Either<Failure,List<ProductEntity>>> getAdminProducts({required bool isGetCreatedProducts,required bool isFirstFetch});
   Future<Either<Failure,void>> addProduct(ProductModel productModel,File imageFile);
   Future<Either<Failure,void>> updateProduct(ProductModel productModel,String newImage);
-  Future<Either<Failure,void>> removeProduct(String productId);
+  Future<Either<Failure,void>> removeProduct(String productId,String image);
+  Future<Either<Failure,String?>> getUserName(String uid);
+
   String? get userUID;
 }
