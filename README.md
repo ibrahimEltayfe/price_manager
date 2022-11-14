@@ -7,7 +7,7 @@ They can add,update,remove products and search for products.
 - Pagination
 - Firebase
 
-<img src=![login] width="300">
+<img src=login width="300">
 
 ![login](https://user-images.githubusercontent.com/40795940/201766131-76b8fd99-28ac-4708-af14-b10acf4e14ec.png)
 ![home](https://user-images.githubusercontent.com/40795940/201766131-76b8fd99-28ac-4708-af14-b10acf4e14ec.png)
