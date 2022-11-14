@@ -13,9 +13,7 @@ import 'package:price_manager/core/utils/injector.dart' as di;
 import 'package:price_manager/core/utils/shared_pref.dart';
 import 'app_routers.dart';
 import 'core/constants/app_colors.dart';
-import 'core/constants/app_errors.dart';
 import 'core/constants/app_routes.dart';
-import 'features/profile/data/data_sources/profile_remote.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -11,6 +11,7 @@ class AuthTextField extends StatefulWidget {
   final String? Function(String?) validator;
   final TextEditingController controller;
   final IconData icon;
+  final bool isObscure;
 
   const AuthTextField({
     required this.hint,
@@ -18,6 +19,7 @@ class AuthTextField extends StatefulWidget {
     this.textInputAction,
     required this.validator,
     Key? key, required this.controller, required this.icon,
+    this.isObscure = false,
   }) : super(key: key);
 
   @override
@@ -62,6 +64,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
               textAlignVertical: TextAlignVertical.center,
               maxLines: 1,
               textAlign: TextAlign.right,
+              obscureText: widget.isObscure,
 
               decoration: InputDecoration(
                 isDense: true,

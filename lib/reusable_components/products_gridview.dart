@@ -141,7 +141,10 @@ class _BuildGridView extends StatelessWidget {
                     },
                     child: Container(
                       key: keys[i],
-                      decoration: getContainerDecoration(offset: Offset(0, context.height * 0.001)),
+                      decoration: getContainerDecoration(
+                        offset: Offset(0, context.height * 0.001),
+                        borderRadius: context.width*0.05
+                      ),
                       child: Column(
                         children: [
 
@@ -149,34 +152,34 @@ class _BuildGridView extends StatelessWidget {
                               image:products[i].image ?? ''
                           ),
 
-                          _BuildAutoSizeText(
-                            title: products[i].name ?? '',
-                            textStyle: getBoldTextStyle(),
-                            fontSize: 15,
+                          Expanded(
+                            child: _BuildAutoSizeText(
+                              title: products[i].name ?? '',
+                              textStyle: getBoldTextStyle(),
+                            ),
                           ),
 
-                          _BuildAutoSizeText(
-                            title: products[i].desc ?? '',
-                            textStyle:
-                            getRegularTextStyle(color: AppColors.darkGrey),
-                            fontSize: 14,
+                          Expanded(
+                            child: _BuildAutoSizeText(
+                              title: products[i].desc ?? '',
+                              textStyle:
+                              getRegularTextStyle(color: AppColors.darkGrey),
+                            ),
                           ),
 
                           Expanded(
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: context.width * 0.025),
+                                padding: EdgeInsets.only(
+                                    right: context.width * 0.028,
+                                ),
                                 child: AutoSizeText.rich(
                                   TextSpan(
                                       text: "${products[i].price ?? '...'} ",
                                       children: const [TextSpan(text: 'جنيه')]),
-                                  style: getBoldTextStyle(
-                                      color: AppColors.primaryColor),
+                                  style: getBoldTextStyle(color: AppColors.primaryColor),
                                   maxLines: 1,
-                                  minFontSize: 17,
-                                  maxFontSize: 17,
                                   textAlign: TextAlign.right,
                                   overflow: TextOverflow.ellipsis,
                                   textDirection: TextDirection.rtl,
@@ -202,7 +205,6 @@ class _BuildGridView extends StatelessWidget {
 class _BuildAutoSizeText extends StatelessWidget {
   final String title;
   final TextStyle textStyle;
-  final double fontSize;
   final Alignment? alignment;
   final int? maxLines;
   final TextAlign? textAlign;
@@ -213,7 +215,7 @@ class _BuildAutoSizeText extends StatelessWidget {
         this.alignment,
         required this.title,
         required this.textStyle,
-        required this.fontSize, this.textAlign})
+        this.textAlign})
       : super(key: key);
 
   @override
@@ -226,8 +228,7 @@ class _BuildAutoSizeText extends StatelessWidget {
           title,
           style: textStyle,
           maxLines: maxLines ?? 1,
-          minFontSize: fontSize,
-          maxFontSize: fontSize,
+
           textAlign: textAlign??TextAlign.right,
           overflow: TextOverflow.ellipsis,
           textDirection: TextDirection.rtl,
@@ -334,7 +335,6 @@ class _BuildFirstBuildErrorMessage extends StatelessWidget {
           _BuildAutoSizeText(
             title: message,
             textStyle: getBoldTextStyle() ,
-            fontSize: 20,
             alignment: Alignment.center,
             textAlign: TextAlign.center,
             maxLines: 3,

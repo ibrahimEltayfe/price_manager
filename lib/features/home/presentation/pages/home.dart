@@ -77,11 +77,11 @@ class _SearchBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: context.width * 0.032),
         child: Container(
             width: context.width,
-            height: context.height * 0.07,
+            height: context.height * 0.072,
 
             decoration: getContainerDecoration(
                 offset: Offset(0, context.height * 0.004),
-                borderRadius: 15,
+                borderRadius: context.width*0.04,
                 blurRadius: 6
             ),
 

@@ -72,7 +72,7 @@ class DashboardRepositoryImpl implements DashboardRepository{
 
         productModel.searchCases = productSearchCases;
 
-        _dashboardRemote.updateProduct(productModel,newImage);
+        return _dashboardRemote.updateProduct(productModel,newImage);
       }
     );
   }

@@ -90,6 +90,7 @@ class _LogibPageState extends State<LoginPage>{
                   hint: AppStrings.password,
                   controller: _passwordController,
                   icon: Icons.lock,
+                  isObscure: true,
                   validator: (password){
                       return _validation.loginPasswordValidator(password!);
                   },

@@ -58,9 +58,11 @@ class _OutlineBorderTextFieldState extends State<OutlineBorderTextField> {
               cursorColor: AppColors.primaryColor,
               cursorRadius: const Radius.circular(20),
               obscureText: widget.isObscure,
+              textDirection: TextDirection.rtl,
 
               decoration: InputDecoration(
                   isDense: true,
+
                   floatingLabelBehavior: FloatingLabelBehavior.never,
 
                   hintText: widget.isNormalHint? widget.hint : null,
@@ -71,10 +73,10 @@ class _OutlineBorderTextFieldState extends State<OutlineBorderTextField> {
                     padding: EdgeInsets.only(right: context.width*0.025),
                     child: AutoSizeText(
                       widget.hint,
+                      overflow: TextOverflow.visible,
                       style: getBoldTextStyle(),
                       maxLines: 1,
                       textAlign: TextAlign.center,
-                      maxFontSize: 18,
                     ),
                   ),
 

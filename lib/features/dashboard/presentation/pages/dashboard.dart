@@ -72,7 +72,7 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
                            constraints: const BoxConstraints.expand(),
                            child: const Align(
                              alignment: Alignment.center,
-                             child: Text("المنتجات المضافة",)
+                             child: FittedBox(child: Text("المنتجات المضافة",))
                            )
                          ),
 
@@ -80,7 +80,7 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
                               constraints: const BoxConstraints.expand(),
                               child: const Align(
                                   alignment: Alignment.center,
-                                  child: Text('المنتجات المعدلة')
+                                  child: FittedBox(child: Text('المنتجات المعدلة'))
                               )
                           ),
                       ]),

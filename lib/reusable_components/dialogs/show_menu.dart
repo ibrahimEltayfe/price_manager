@@ -20,11 +20,11 @@ Future<void> showPopUpMenu(BuildContext context,GlobalKey key,void Function(int)
         maxWidth: context.width*0.22,
         maxHeight: context.height*0.08,
     ),
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20),
-            bottomLeft: Radius.circular(20),
-            bottomRight:  Radius.circular(20)
+            topRight: Radius.circular(context.width*0.045),
+            bottomLeft: Radius.circular(context.width*0.045),
+            bottomRight:  Radius.circular(context.width*0.045)
         )
     ),
     position: RelativeRect.fromLTRB(left, top, right,bottom),
