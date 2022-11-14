@@ -1,18 +1,10 @@
-# price_manager
+Price Manager
+It an application for supermarket workers to follow the change of product prices.
+They can add,update,remove products and search for products.
 
-price manager for supermarket
+- Clean Archeticture
+- Bloc pattern
+- Pagination
+- Firebase
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# price_manager
-# price_manager
+<img src="![00](https://user-images.githubusercontent.com/40795940/201765975-e4a9427d-85f9-4909-a935-ab42395cebaf.png)" width="300">
